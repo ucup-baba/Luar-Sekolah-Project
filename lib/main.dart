@@ -1,4 +1,4 @@
-
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -74,6 +74,187 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
   }
 
+  // Fungsi untuk membangun header
+  Widget _buildHeader() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // 1. Menampilkan Logo dari folder assets
+      Image.asset(
+        'assets/icon/luarsekolah_logo.png', // Pastikan path ini sesuai dengan struktur folder Anda
+        height: 40, // Sesuaikan ukurannya
+      ),
+      const SizedBox(height: 24),
+
+      // 2. Judul Utama
+      const Text(
+        'Daftarkan Akun Untuk Lanjut Akses ke Luarsekolah',
+        style: TextStyle(
+          color: Color(0xFF09090B),
+          fontSize: 22, // Sedikit diperbesar agar mirip desain
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      const SizedBox(height: 12),
+
+      // 3. Sub-judul
+      const Text(
+        'Satu akun untuk akses Luarsekolah dan BelajarBekerja',
+        style: TextStyle(
+          color: Color(0xFF7B7F95),
+          fontSize: 14,
+        ),
+      ),
+    ],
+  );
+  }
+  
+  // Fungsi untuk membangun tombol Google
+  Widget _buildGoogleButton() {
+  return OutlinedButton.icon(
+    // Aksi yang dijalankan saat tombol ditekan
+    onPressed: () {
+      // TODO: Implementasi logika daftar dengan Google
+      print('Tombol Google diklik!');
+    },
+    // Ikon/logo di sebelah kiri
+    icon: Image.asset(
+      'assets/icon/google_logo.png',
+      height: 20.0, // Sesuaikan ukuran logo
+      width: 20.0,
+    ),
+    // Teks di sebelah kanan ikon
+    label: const Text(
+      'Daftar dengan Google',
+      style: TextStyle(
+        color: Color(0xFF09090B),
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+    // Styling untuk tombol
+    style: OutlinedButton.styleFrom(
+      // Membuat tombol memenuhi lebar layar
+      minimumSize: const Size(double.infinity, 48),
+      // Styling border
+      side: const BorderSide(color: Color(0xFF3F3F4B), width: 1),
+      // Membuat sudut tombol melengkung
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(6),
+      ),
+    ),
+  );
+  }
+  
+  // Fungsi untuk membangun pemisah email
+  Widget _buildEmailSeparator() {
+  return Row(
+    children: [
+      // Garis di sebelah kiri (akan mengisi ruang kosong)
+      const Expanded(
+        child: Divider(
+          color: Color(0xFFCBCDD6),
+          thickness: 1,
+        ),
+      ),
+      // Teks di tengah
+      const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        child: Text(
+          'atau gunakan email',
+          style: TextStyle(
+            color: Color(0xFF3F3F4B),
+            fontSize: 12,
+          ),
+        ),
+      ),
+      // Garis di sebelah kanan (akan mengisi ruang kosong)
+      const Expanded(
+        child: Divider(
+          color: Color(0xFFCBCDD6),
+          thickness: 1,
+        ),
+      ),
+    ],
+  );
+}
+  // Fungsi untuk membangun footer
+  Widget _buildFooter() {
+  return Column(
+    children: [
+      // 1. Teks Syarat & Ketentuan
+      Text.rich(
+        TextSpan(
+          style: const TextStyle(
+            color: Color(0xFF7B7F95),
+            fontSize: 14,
+          ),
+          children: [
+            const TextSpan(text: 'Dengan mendaftar di Luarsekolah, kamu menyetujui '),
+            TextSpan(
+              text: 'syarat dan ketentuan kami',
+              style: const TextStyle(
+                color: Color(0xFF2570EB), // Warna biru untuk link
+                decoration: TextDecoration.underline,
+              ),
+              // recognizer digunakan untuk membuat teks bisa diklik
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  // TODO: Tambahkan aksi saat link diklik (misal: buka browser)
+                  print('Link Syarat & Ketentuan diklik!');
+                },
+            ),
+          ],
+        ),
+        textAlign: TextAlign.center,
+      ),
+      const SizedBox(height: 24),
+
+      // 2. Kotak "Sudah Punya Akun?"
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFEFF5FF), // Warna latar biru muda
+          border: Border.all(color: const Color(0xFF2570EB)), // Border biru
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Emoji lambaian tangan
+            const Text('👋', style: TextStyle(fontSize: 20)),
+            const SizedBox(width: 8),
+            Text.rich(
+              TextSpan(
+                style: const TextStyle(
+                  color: Color(0xFF09090B),
+                  fontSize: 14,
+                ),
+                children: [
+                  const TextSpan(text: 'Sudah punya akun? '),
+                  TextSpan(
+                    text: 'Masuk ke akunmu',
+                    style: const TextStyle(
+                      color: Color(0xFF2570EB),
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        // TODO: Tambahkan aksi navigasi ke halaman login
+                        print('Link Masuk diklik!');
+                      },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,6 +267,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // (Isi konten UI Anda sudah benar)
+                _buildHeader(),
+                const SizedBox(height: 24), 
+                _buildGoogleButton(),
+                const SizedBox(height: 16), 
+                _buildEmailSeparator(),
+                const SizedBox(height: 16),
                 _buildTextField(label: 'Nama Lengkap', hint: 'Seperti di KTP'),
                 const SizedBox(height: 16),
                 _buildTextField(label: 'Email Aktif', hint: 'mail@gmail.com'),
@@ -135,7 +322,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const Text("I'm not a robot"),
                       const Spacer(),
                       // Pastikan gambar ini ada di folder assets Anda
-                      // Image.asset('assets/recaptcha_logo.png', width: 48) 
+                      Image.asset('assets/icon/recaptcha_logo.png', width: 48) 
                     ],
                   ),
                 ),
@@ -146,9 +333,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     backgroundColor: const Color(0xFF077E60),
                     minimumSize: const Size(double.infinity, 48),
                   ),
-                  child: const Text('Daftarkan Akun'),
+                  child: const Text('Daftarkan Akun', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
                 ),
                 const SizedBox(height: 12),
+                _buildFooter(), 
               ],
             ),
           ),
