@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-  // FIX 1: Hapus 'as Widget' yang tidak perlu.
   runApp(const MyApp());
 }
 
