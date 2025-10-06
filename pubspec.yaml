@@ -58,10 +58,23 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
-
+  assets:
+    - assets/icon/luarsekolah_logo.png
+    - assets/icon/google_logo.png
+    - assets/icon/recaptcha_logo.png
+    - assets/icon/lainnya_icon.png
+    - assets/icon/magang_icon.png
+    - assets/icon/prakerja_icon.png
+    - assets/icon/subs_icon.jpg
+    - assets/images/banner1.png
+    - assets/images/banner2.png
+    - assets/images/banner3.png
+    - assets/images/kelas_css.png
+    - assets/images/kelas_dart.png
+    - assets/images/kelas_sampah.jpg
+    - assets/images/kelas_swiftui.png
+    - assets/images/kelas_tanaman.png
+    - assets/images/profile_picture.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
