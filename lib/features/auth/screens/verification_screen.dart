@@ -1,10 +1,17 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'sign_in_screen.dart'; // <-- 1. TAMBAHKAN IMPORT INI
+import 'sign_in_screen.dart';
 
 class VerificationScreen extends StatelessWidget {
-  const VerificationScreen({super.key});
+  // 1. Deklarasikan variabel untuk menampung data
+  final String email;
+
+  // 2. Update constructor untuk WAJIB menerima data email
+  const VerificationScreen({
+    super.key,
+    required this.email,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +24,15 @@ class VerificationScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Menggunakan Lottie.network untuk mengambil animasi dari URL
-              Lottie.network(
-                'https://lottie.host/8345bf3b-fa21-4410-bdcb-4e9cc489a32a/V1rjPsocFO.json',
+              Lottie.asset(
+                'assets/icon/email.json',
+                width: 150,
                 height: 150,
+                fit: BoxFit.cover,
               ),
               const SizedBox(height: 32),
-
-              // Judul Utama
               const Text(
-                'Email Verifikasi Sudah Dikirim ke Emailmu',
+                'Email Verifikasi Sudah Dikirim',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,
@@ -35,8 +41,6 @@ class VerificationScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-
-              // Teks Deskripsi dengan Link di Dalamnya
               Text.rich(
                 TextSpan(
                   style: TextStyle(
@@ -45,9 +49,10 @@ class VerificationScreen extends StatelessWidget {
                     height: 1.5,
                   ),
                   children: [
-                    const TextSpan(
+                    // 3. Gunakan variabel email yang sudah diterima
+                    TextSpan(
                       text:
-                          'Silakan cek kotak masuk di email mail@mail.xo untuk melakukan verifikasi akunmu. Jika kamu tidak menerima pesan di kotak masukmu, coba untuk cek di folder spam atau ',
+                          'Silakan cek kotak masuk di email $email untuk melakukan verifikasi akunmu. Jika kamu tidak menerima pesan, coba cek di folder spam atau ',
                     ),
                     TextSpan(
                       text: 'kirim ulang verifikasi',
@@ -57,7 +62,6 @@ class VerificationScreen extends StatelessWidget {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          // TODO: Tambahkan logika kirim ulang email
                           print('Kirim ulang verifikasi diklik!');
                         },
                     ),
@@ -66,11 +70,8 @@ class VerificationScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
-
-              // Link "Akses halaman masuk" dengan Ikon
               InkWell(
                 onTap: () {
-                  // 2. UBAH BAGIAN INI UNTUK NAVIGASI
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
                         builder: (context) => const SignInScreen()),

@@ -1,64 +1,69 @@
-// Jangan lupa import User model dan Flutter material
 import 'package:flutter/material.dart';
-import '../../auth/services/auth_service.dart'; // Sesuaikan path ke auth_service.dart
+import 'package:provider/provider.dart';
+// Sesuaikan path ke service dan model Anda
+import '../../auth/services/auth_service.dart';
 
 class HomeHeader extends StatelessWidget {
-  // PERBAIKAN 1: Menambahkan titik pada 'this.user'
-  const HomeHeader({super.key, required this.user});
-  final User user;
+  // ✅ KEMBALIKAN KE KONSTRUKTOR SEDERHANA
+  // Widget ini tidak perlu menerima data user lagi.
+  const HomeHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFF0EA781),
-      padding: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 40),
-      child: Row(
-        children: [
-          const CircleAvatar(
-            radius: 20,
-            backgroundImage: AssetImage("assets/images/profile_picture.png"),
-            onBackgroundImageError: null,
-          ),
-          const SizedBox(width: 12),
-          // PERBAIKAN 2: Menghapus 'const' dari Expanded karena child-nya tidak constant
-          Expanded(
-            // PERBAIKAN 2: Menghapus 'const' dari Column karena child-nya tidak constant
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text( // 'const' di sini tidak apa-apa karena teksnya statis
-                  'Halo,',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontFamily: 'LS Sans',
-                  ),
+    // ✅ GUNAKAN CONSUMER UNTUK "MENDENGARKAN" AUTHSERVICE
+    return Consumer<AuthService>(
+      builder: (context, auth, child) {
+        // Ambil data user yang sedang login dari provider
+        final User? currentUser = auth.loggedInUser;
+
+        // Jaga-jaga jika user belum login, tampilkan fallback
+        if (currentUser == null) {
+          return Container(
+            height: 140, // Sesuaikan tinggi
+            color: const Color(0xFF0EA781),
+            alignment: Alignment.center,
+            child: const Text('User tidak ditemukan', style: TextStyle(color: Colors.white)),
+          );
+        }
+        
+        // Jika user ada, bangun UI dengan data terbaru
+        return Container(
+          color: const Color(0xFF0EA781),
+          padding: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 40),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 20,
+                // ✅ Gunakan data foto dari 'currentUser'
+                // Beri nilai default jika photoPath null
+                backgroundImage: AssetImage(
+                    currentUser.photoPath ?? "assets/images/profile_picture.png"
                 ),
-                Text( // 'const' di sini HARUS dihapus karena menggunakan variabel 'user.name'
-                  '${user.name}! 😁',
-                  style: const TextStyle( // const di TextStyle boleh karena isinya statis
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontFamily: 'LS Sans',
-                    fontWeight: FontWeight.w600,
-                  ),
+                onBackgroundImageError: (exception, stackTrace) {},
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Halo,', style: TextStyle(color: Colors.white)),
+                    // ✅ Gunakan data nama dari 'currentUser'
+                    Text(
+                      '${currentUser.name}! 👋🏻',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              // ... sisa widget notifikasi ...
+            ],
           ),
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.40),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.notifications_outlined,
-              color: Colors.white,
-            ),
-          )
-        ],
-      ),
+        );
+      },
     );
   }
 }

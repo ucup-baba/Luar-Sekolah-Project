@@ -1,8 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import '../../home/screens/home_screen.dart'; // Pastikan path ini benar
-import 'register_screen.dart'; // Pastikan path ini benar
-import '../services/auth_service.dart'; // Pastikan path ini benar
+import '../../home/screens/home_screen.dart';
+import 'register_screen.dart';
+import '../services/auth_service.dart';
+
+
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
@@ -15,17 +17,18 @@ class _SignInScreenState extends State<SignInScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  bool _isEmailValid = true;
-  bool _isPasswordVisible = false;
-  bool _isChecked = false;
-  bool _isFormValid = false;
 
+  bool _isPasswordVisible = false;
+
+  bool _isEmailValid = true;
+
+  bool _isFormValid = false;
 
   @override
   void initState() {
     super.initState();
-    _emailController.addListener(_validateForm);
-    _passwordController.addListener(_validateForm);
+    _emailController.addListener(_validateAll);
+    _passwordController.addListener(_validateAll);
   }
 
   @override
@@ -35,48 +38,39 @@ class _SignInScreenState extends State<SignInScreen> {
     super.dispose();
   }
 
-  // --- KUMPULAN FUNGSI LOGIKA ---
-  void _validateForm() {
-    final email = _emailController.text;
-    final password = _passwordController.text;
-    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+  // --- FUNGSI LOGIKA YANG SUDAH AMAN ---
+  void _validateAll() {
+    setState(() {
+      final email = _emailController.text;
+      final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+      _isEmailValid = email.isEmpty || emailRegex.hasMatch(email);
 
-    final isEmailFormatValid = email.isEmpty || emailRegex.hasMatch(email);
-
-    final allConditionsMet =
-        emailRegex.hasMatch(email) && password.isNotEmpty && _isChecked;
-
-    if (_isFormValid != allConditionsMet || _isEmailValid != isEmailFormatValid) {
-      setState(() {
-        _isEmailValid = isEmailFormatValid;
-        _isFormValid = allConditionsMet;
-      });
-    }
+      _isFormValid = emailRegex.hasMatch(email) && _passwordController.text.isNotEmpty;
+    });
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     final email = _emailController.text;
     final password = _passwordController.text;
 
-  // Panggil service untuk login
-  authService.login(email, password).then((user) {
-    if (user != null) {
-      // Jika login berhasil (user tidak null), navigasi ke HomeScreen
-      // dan kirim data user
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => HomeScreen(user: user)),
-      );
-    } else {
-      // Jika login gagal, tampilkan pesan error
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login Gagal! Email atau Password salah.')),
-      );
-    }
-  });
-}
+    final user = await authService.login(email, password);
+  
+
+    authService.login(email, password).then((user) {
+      if (user != null && mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Login Gagal! Email atau Password salah.')),
+        );
+      }
+    });
+  }
+
 
   void _navigateToRegister() {
-    // Navigasi ke RegisterScreen
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const RegisterScreen()),
     );
@@ -105,9 +99,8 @@ class _SignInScreenState extends State<SignInScreen> {
                 _buildPasswordTextField(),
                 const SizedBox(height: 16),
                 _buildForgotPasswordLink(),
-                const SizedBox(height: 24),
-                _buildRecaptchaCheckbox(),
-                const SizedBox(height: 24),
+
+                const SizedBox(height: 32),
                 _buildSubmitButton(),
                 const SizedBox(height: 24),
                 _buildFooter(),
@@ -120,11 +113,14 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   // --- KUMPULAN FUNGSI BANTUAN UNTUK UI ---
+
+  // (Semua fungsi _build... di bawah ini sudah benar)
   Widget _buildHeader() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+
+
       children: [
-        // Pastikan Anda memiliki logo ini di path 'assets/icon/luarsekolah_logo.png'
         Image.asset('assets/icon/luarsekolah_logo.png', height: 40),
         const SizedBox(height: 24),
         const Text(
@@ -146,10 +142,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Widget _buildGoogleButton() {
     return OutlinedButton.icon(
-      onPressed: () {
-        // Logika untuk masuk dengan Google
-      },
-      // Pastikan Anda memiliki logo ini di path 'assets/icon/google_logo.png'
+
+      onPressed: () {},
       icon: Image.asset('assets/icon/google_logo.png', height: 20.0, width: 20.0),
       label: const Text(
         'Masuk dengan Google',
@@ -240,9 +234,8 @@ class _SignInScreenState extends State<SignInScreen> {
     return Align(
       alignment: Alignment.centerRight,
       child: TextButton(
-        onPressed: () {
-          // Logika untuk Lupa Password
-        },
+
+        onPressed: () {},
         child: const Text(
           'Lupa password',
           style: TextStyle(
@@ -255,31 +248,6 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Widget _buildRecaptchaCheckbox() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFAFAFA),
-        border: Border.all(color: const Color(0xFFD6D6D6)),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Row(children: [
-        Checkbox(
-          value: _isChecked,
-          onChanged: (bool? newValue) {
-            setState(() {
-              _isChecked = newValue ?? false;
-            });
-            _validateForm();
-          },
-        ),
-        const Text("I'm not a robot"),
-        const Spacer(),
-        // Anda bisa menambahkan logo reCAPTCHA di sini jika ada
-        // Image.asset('assets/icon/recaptcha_logo.png', height: 32)
-      ]),
-    );
-  }
 
   Widget _buildSubmitButton() {
     return ElevatedButton(

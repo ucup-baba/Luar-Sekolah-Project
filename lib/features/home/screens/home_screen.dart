@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+
+// Import semua widget dan screen yang Anda butuhkan
 import '../widget/banner_carousel.dart';
 import '../widget/home_header.dart';
 import '../widget/popular_class_section.dart';
 import '../widget/program_section.dart';
 import '../widget/voucher_card.dart';
-import '../../auth/services/auth_service.dart';
 import '../../profile/screens/profile_screen.dart';
+// ✅ 1. IMPORT HALAMAN KELASKU YANG BARU
+import '../../kelasku/screens/kelasku_screen.dart'; 
+
 
 class HomeScreen extends StatefulWidget {
-  final User user;
-  const HomeScreen({super.key, required this.user});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -17,20 +20,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  int _previousIndex = 0;
 
-  // 1. BUAT METHOD _buildHomeContent DI SINI
-  // Isinya adalah semua kode UI yang sebelumnya ada di body Scaffold
+  // Method ini hanya untuk konten tab Beranda
   Widget _buildHomeContent() {
     return SingleChildScrollView(
       child: Column(
         children: [
-          // Memanggil widget Header
-          HomeHeader(user: widget.user),
+          const HomeHeader(),
           Transform.translate(
             offset: const Offset(0, -20),
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -41,22 +42,19 @@ class _HomeScreenState extends State<HomeScreen> {
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Memanggil widget-widget lain
                   BannerCarousel(),
                   SizedBox(height: 24),
-                  Text(
-                    'Program dari Luarsekolah',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
+                  Text('Program dari Luarsekolah',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   SizedBox(height: 16),
                   ProgramSection(),
                   SizedBox(height: 24),
                   VoucherCard(),
                   SizedBox(height: 24),
-                  Text(
-                    'Kelas Terpopuler di Prakerja',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
+                  Text('Kelas Terpopuler di Prakerja',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   SizedBox(height: 16),
                   PopularClassSection(),
                 ],
@@ -70,18 +68,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Definisikan daftar halaman
+    // Definisikan daftar halaman untuk Bottom Navigation Bar
     final List<Widget> pages = [
-      _buildHomeContent(), // Panggil method yang baru dibuat (indeks 0)
-      const Center(child: Text('Halaman Kelas')),   // Placeholder (indeks 1)
-      const Center(child: Text('Halaman Kelasku')), // Placeholder (indeks 2)
-      const Center(child: Text('Halaman koinLS')),  // Placeholder (indeks 3)
-      const ProfileScreen(),             // Halaman Akun (indeks 4)
+      _buildHomeContent(), // Indeks 0: Beranda
+      const Center(child: Text('Halaman Kelas')), // Indeks 1: Kelas (Placeholder)
+      const KelaskuScreen(), // ✅ 2. GANTI PLACEHOLDER DENGAN KELASKU SCREEN
+      const Center(child: Text('Halaman koinLS')), // Indeks 3: koinLS (Placeholder)
+      const ProfileScreen(), // Indeks 4: Akun
     ];
 
-    // 2. GUNAKAN 'pages' UNTUK SATU-SATUNYA BODY
     return Scaffold(
-      body: pages[_currentIndex], // Hanya ada satu body di sini
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          final slideRight = _currentIndex > _previousIndex;
+          final offsetAnimation = Tween<Offset>(
+            begin: Offset(slideRight ? 1.0 : -1.0, 0.0),
+            end: Offset.zero,
+          ).animate(animation);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+        child: Container(
+          key: ValueKey<int>(_currentIndex),
+          child: pages[_currentIndex],
+        ),
+      ),
       bottomNavigationBar: _buildBottomNavBar(),
     );
   }
@@ -106,9 +121,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
       onTap: (index) {
         setState(() {
+          _previousIndex = _currentIndex;
           _currentIndex = index;
         });
       },
     );
   }
 }
+

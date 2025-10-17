@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 // 1. Model untuk data pengguna
 class User {
   final String name;
@@ -9,7 +11,6 @@ class User {
   final DateTime? birthDate;
   final String? jobStatus;
   final String? photoPath;
-  
 
   User({
     required this.name,
@@ -23,8 +24,6 @@ class User {
     this.photoPath,
   });
 
-  // ✅ PERBAIKAN 1: Method copyWith dipindahkan ke DALAM class User
-  // dan menggunakan named parameter (lebih baik)
   User copyWith({
     String? name,
     String? email,
@@ -48,10 +47,10 @@ class User {
       photoPath: photoPath ?? this.photoPath,
     );
   }
-} // <-- Class User berakhir di sini
+}
 
 // 2. Service untuk mengelola autentikasi
-class AuthService {
+class AuthService with ChangeNotifier {
   User? _registeredUser;
   User? _loggedInUser;
 
@@ -63,30 +62,33 @@ class AuthService {
   }
 
   Future<User?> login(String email, String password) async {
-    print('Mencoba login dengan email: $email');
     if (_registeredUser != null &&
         _registeredUser!.email == email &&
         _registeredUser!.password == password) {
-      print('Login berhasil untuk: ${_registeredUser!.name}');
       _loggedInUser = _registeredUser;
       return _loggedInUser;
     }
-    print('Login gagal: email atau password salah.');
     return null;
   }
 
   Future<void> updateUser(User updatedUser) async {
-    if (_registeredUser != null) {
-      _registeredUser = updatedUser;
+    if (_loggedInUser != null) {
       _loggedInUser = updatedUser;
-      print('Data pengguna diperbarui: ${_registeredUser!.name}');
+
+      if (_registeredUser?.email == updatedUser.email) {
+        _registeredUser = updatedUser;
+      }
+
+      print('Data pengguna diperbarui: ${_loggedInUser!.name}');
+      notifyListeners();
     }
-  } // <-- ✅ PERBAIKAN 2: Tambahkan kurung kurawal penutup di sini
+  }
 
   void logout() {
     _loggedInUser = null;
+    notifyListeners();
   }
-} // <-- Class AuthService berakhir di sini
+}
 
-// Singleton Pattern
-final authService = AuthService(); // <-- ✅ PERBAIKAN 3: Hapus kurung kurawal berlebih dari sini
+// Singleton pattern — hanya satu instance global
+final authService = AuthService();
