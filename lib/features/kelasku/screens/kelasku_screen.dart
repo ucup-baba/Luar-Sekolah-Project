@@ -73,7 +73,7 @@ class KelaskuScreen extends StatelessWidget {
             // Konten untuk Tab 2 (Kelas SPL)
             const Center(child: Text('Daftar Kelas SPL Anda')),
             // Konten untuk Tab 3 (Kelas Langganan)
-            const Center(child: Text('Daftar Klas Langganan Anda')),
+            const Center(child: Text('Daftar Kelas Langganan Anda')),
           ],
         ),
       ),
