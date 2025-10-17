@@ -58,7 +58,6 @@ class AuthService {
   User? get loggedInUser => _loggedInUser;
 
   Future<bool> register(User newUser) async {
-    print('Mendaftarkan pengguna: ${newUser.name}');
     _registeredUser = newUser;
     return true;
   }
