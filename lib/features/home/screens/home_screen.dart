@@ -8,10 +8,12 @@ import '../widget/program_section.dart';
 import '../widget/voucher_card.dart';
 import '../../profile/screens/profile_screen.dart';
 // ✅ 1. IMPORT HALAMAN KELASKU YANG BARU
-import '../../kelasku/screens/kelasku_screen.dart'; 
-
+import '../../kelasku/screens/kelasku_screen.dart';
+// ✅ 2. IMPORT HALAMAN KELAS ADMIN YANG BARU
+import 'package:luarsekolah_project/features/kelas/screens/kelas_admin_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  // ✅ 3. KONSTRUKTOR SEDERHANA (SUDAH BENAR)
   const HomeScreen({super.key});
 
   @override
@@ -71,8 +73,8 @@ class _HomeScreenState extends State<HomeScreen> {
     // Definisikan daftar halaman untuk Bottom Navigation Bar
     final List<Widget> pages = [
       _buildHomeContent(), // Indeks 0: Beranda
-      const Center(child: Text('Halaman Kelas')), // Indeks 1: Kelas (Placeholder)
-      const KelaskuScreen(), // ✅ 2. GANTI PLACEHOLDER DENGAN KELASKU SCREEN
+      const KelasAdminScreen(), // Indeks 1: Kelas (Admin CRUD)
+      const KelaskuScreen(), // Indeks 2: Kelasku (User)
       const Center(child: Text('Halaman koinLS')), // Indeks 3: koinLS (Placeholder)
       const ProfileScreen(), // Indeks 4: Akun
     ];
@@ -128,4 +130,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
