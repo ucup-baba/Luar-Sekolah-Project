@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // Sesuaikan path ke service dan model Anda
 import '../../auth/services/auth_service.dart';
+import 'package:luarsekolah_project/features/auth/models/user_model.dart';
+
 
 class HomeHeader extends StatelessWidget {
   // ✅ KEMBALIKAN KE KONSTRUKTOR SEDERHANA

@@ -82,9 +82,9 @@ class ClassCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  course.price,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                ),
+                    'Rp ${course.price}',
+                     style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    ),
               ],
             ),
           ),

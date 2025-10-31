@@ -5,6 +5,7 @@ import 'sign_in_screen.dart';
 import 'verification_screen.dart';
 import '../services/auth_service.dart'; // Sesuaikan path
 import 'package:provider/provider.dart';  
+import 'package:luarsekolah_project/features/auth/models/user_model.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
